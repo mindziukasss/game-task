@@ -1,1 +1,8 @@
-<p>gameboard works!</p>
+<h3>Game board</h3>
+<div class="col-md-4" *ngIf="gameBoard | async as board">
+    <div class="btn-group" role="group" *ngFor="let slot of board.slots; let i = index;">
+        <button *ngIf="slot.color === 'green'" type="button" class="btn btn-success">{{ slot.positionToId }}</button>
+        <button *ngIf="slot.color === 'red'" type="button" class="btn btn-danger">{{ slot.positionToId }}</button>
+        <button *ngIf="slot.color === 'black'" type="button" class="btn btn-dark">{{ slot.positionToId }}</button>
+      </div>
+</div>
