@@ -1,0 +1,28 @@
+<h3>Statistics (last 200)</h3>
+<div class="col-md-12" *ngIf="statistics | async as stats">
+  <table class="align-middle mb-0 bg-white">
+    <tbody>
+      <tr>
+        <td></td>
+        <th colspan="5" class="cold">COLD</th>
+        <th colspan="27">NEUTRAL</th>
+        <th colspan="5" class="hot">HOT</th>
+      </tr>
+      <tr>
+        <th>SLOT</th>
+        <td *ngFor="let stat of stats">
+          <button *ngIf="getColor(stat.result) === 'green'" class="btn btn-success btn-sm">{{ stat.result }}</button>
+          <button *ngIf="getColor(stat.result) === 'red'" class="btn btn-danger btn-sm">{{ stat.result }}</button>
+          <button *ngIf="getColor(stat.result) === 'black'" class="btn btn-dark btn-sm">{{ stat.result }}</button>
+        </td>
+      </tr>
+      <tr>
+        <th>HITS</th>
+        <td class="text-center" *ngFor="let stat of stats; let i = index;"
+            [ngClass]="{ cold: i < 5, hot: 31 < i}">
+          {{ stat.count }}
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
