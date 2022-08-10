@@ -8,12 +8,15 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { HttpClientModule } from '@angular/common/http';
 import { ConfigurationService } from './services/configuration.service';
 import { StatisticsComponent } from './components/statistics/statistics/statistics.component';
+import { EventsComponent } from './components/events/events.component';
+import { EventsService } from "./services/events.service";
 
 @NgModule({
   declarations: [
     AppComponent,
     GameboardComponent,
     StatisticsComponent,
+    EventsComponent,
   ],
   imports: [
     BrowserModule,
@@ -22,7 +25,8 @@ import { StatisticsComponent } from './components/statistics/statistics/statisti
     HttpClientModule,
   ],
   providers: [
-    ConfigurationService
+    ConfigurationService,
+    EventsService
   ],
   bootstrap: [AppComponent]
 })

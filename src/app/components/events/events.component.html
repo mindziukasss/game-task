@@ -1,0 +1,17 @@
+<h3>Events</h3>
+<section class="pb-4">
+  <div class="bg-white border rounded-5">
+    <div class="p-4 text-center mobile-hidden">
+      <div *ngIf="events | async as gameEvents">
+        <div *ngFor="let game of gameEvents">
+        <span *ngIf="game.outcome">
+          Game {{ game.id }} ended, result is {{ game.outcome }}
+        </span>
+          <span *ngIf="!game.outcome && isTimerShow">
+          Game {{ game.id }} will start in {{ countdown }} s.
+        </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
