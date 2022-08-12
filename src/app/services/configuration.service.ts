@@ -3,8 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { take, tap } from 'rxjs/operators';
 import { LogsService } from './logs.service';
-
-const CONFIGURATION_URL = 'https://dev-games-backend.advbet.com/v1/ab-roulette/1/configuration'
+import { links } from '../../app/links';
 
 export interface Parts {
   color: string;
@@ -58,7 +57,7 @@ export class ConfigurationService {
   getConfig(): Observable<Config>
   {
     this.logsService.updateLogs('GET .../configuration');
-    return this.http.get<Config>(CONFIGURATION_URL);
+    return this.http.get<Config>(links.CONFIGURATION_URL);
   }
 
   updateConfig(data: GameData): void

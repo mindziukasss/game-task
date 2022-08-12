@@ -1,12 +1,10 @@
 import { Injectable } from '@angular/core';
 import { Observable, BehaviorSubject, Subject } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
-import { take, tap, catchError } from 'rxjs/operators';
 import { Statistics, StatisticsService } from './statistics.service';
 import { LogsService } from './logs.service';
-
-const NEXT_GAME_URL = 'https://dev-games-backend.advbet.com/v1/ab-roulette/1/nextGame'
-const GET_GAME_URL = 'https://dev-games-backend.advbet.com/v1/ab-roulette/1/game'
+import { links } from '../links';
+import { consts } from "../constants";
 
 export interface NextGameResponse {
   uuid: string;
@@ -24,6 +22,9 @@ export interface NextGameResponse {
   providedIn: 'root'
 })
 export class EventsService {
+
+  // @ts-ignore
+  outcome: number;
 
   private gameEventsSubject: BehaviorSubject<NextGameResponse[]> = new BehaviorSubject<NextGameResponse[]>([]);
   events: Observable<NextGameResponse[]> = this.gameEventsSubject.asObservable();
@@ -44,8 +45,8 @@ export class EventsService {
   getEvents(): Observable<NextGameResponse>
   {
     this.logsService.updateLogs('Checking for new game');
-    this.logsService.updateLogs(`GET .../stats?limit=200`);
-    return this.http.get<NextGameResponse>(NEXT_GAME_URL);
+    this.logsService.updateLogs(`GET .../stats?limit=`+ consts.LIMIT);
+    return this.http.get<NextGameResponse>(links.NEXT_GAME_URL);
   }
 
   addNewGameEvent(newEvent: NextGameResponse): void
@@ -59,7 +60,7 @@ export class EventsService {
   getGameById(id: number): Observable<NextGameResponse>
   {
     this.logsService.updateLogs('Get .../game/' + id);
-    return this.http.get<NextGameResponse>(`${GET_GAME_URL}/${id}`);
+    return this.http.get<NextGameResponse>(`${links.GET_GAME_URL}/${id}`);
   }
 
   updateEvent(newEvent: NextGameResponse): void
@@ -72,16 +73,6 @@ export class EventsService {
     }
   }
 
-  updateStatistics(): void
-  {
-    this.statisticsService.getStatistics()
-      .pipe(
-        take(1),
-        tap((stats: Statistics[]) => this.gameStatsSubject.next(stats)),
-      )
-      .subscribe();
-  }
-
   gameStatus(): void
   {
     this.isLoadingSubject.next(true);
@@ -90,5 +81,16 @@ export class EventsService {
   changeGameStatus(): void
   {
     this.isLoadingSubject.next(false);
+    this.statisticsService.updateStats();
+  }
+
+  lastNumber(game: NextGameResponse[]): void
+  {
+    if (game.length > 1) {
+      const number = Number(game[game.length - 2].outcome);
+      this.outcome = number;
+      // @ts-ignore
+      return number;
+    }
   }
 }

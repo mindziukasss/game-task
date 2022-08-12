@@ -1,8 +1,8 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Observable } from 'rxjs';
-import { ConfigurationService, GameData } from '../../services/configuration.service';
-import { LogsService } from '../../services/logs.service';
+import { ConfigurationService } from '../../services/configuration.service';
 import { EventsService, NextGameResponse } from '../../services/events.service';
+import { LogsService } from '../../services/logs.service';
 import { tap } from 'rxjs/operators';
 
 @Component({
@@ -38,20 +38,15 @@ export class GameboardComponent implements OnInit, OnDestroy{
     this.gameEvents = this.eventsService.events
       .pipe(
         tap((game: NextGameResponse[]) => {
-          this.lastNumber(game);
+        // @ts-ignore
+          this.outcome = this.eventsService.lastNumber(game);
+          setTimeout(() => {
+            // @ts-ignore
+            this.outcome = null;
+          }, 5000);
         }),
       )
       .subscribe();
-  }
-
-  private lastNumber(game: NextGameResponse[]): void {
-    if (game.length > 1) {
-      this.outcome = Number(game[game.length - 2].outcome);
-      setTimeout(() => {
-        // @ts-ignore
-        this.outcome = null;
-      }, 5000);
-    }
   }
 
   ngOnDestroy(): void {

@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { Statistics, StatisticsService } from '../../../services/statistics.service';
-import {filter, Observable, tap } from 'rxjs';
-import { ConfigurationService, GameData, Parts } from '../../../services/configuration.service';
-import { EventsService } from '../../../services/events.service';
+import { Statistics, StatisticsService } from '../../services/statistics.service';
+import { filter, Observable, tap } from 'rxjs';
+import { ConfigurationService, GameData, Parts } from '../../services/configuration.service';
+import {consts} from "../../constants";
 
 @Component({
   selector: 'app-statistics',
@@ -16,17 +16,18 @@ export class StatisticsComponent implements OnInit {
   // @ts-ignore
   config: GameData;
 
+  limit = consts.LIMIT
+
   constructor(
     private configurationService: ConfigurationService,
     private statisticsService: StatisticsService,
-    private eventsService: EventsService,
   ) { }
 
   ngOnInit(): void
   {
     this.statisticsService.updateStats()
     this.statistics = this.statisticsService.gameStatistics.pipe()
-    this.eventsService.updateStatistics()
+
     this.configurationService.config.pipe(
       filter((config: GameData) => config !== null),
       tap((config: GameData) => this.config = config)

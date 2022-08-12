@@ -7,10 +7,10 @@ import { GameboardComponent } from './components/gameboard/gameboard.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { HttpClientModule } from '@angular/common/http';
 import { ConfigurationService } from './services/configuration.service';
-import { StatisticsComponent } from './components/statistics/statistics/statistics.component';
+import { StatisticsComponent } from './components/statistics/statistics.component';
 import { EventsComponent } from './components/events/events.component';
 import { EventsService } from "./services/events.service";
-import { LogsComponent } from './components/logs/logs/logs.component';
+import { LogsComponent } from './components/logs/logs.component';
 
 @NgModule({
   declarations: [

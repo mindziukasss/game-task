@@ -71,7 +71,6 @@ export class EventsComponent implements OnInit {
             this.logsService.updateLogs(`Result is ${game.outcome}`);
             this.eventsService.updateEvent(game);
             this.eventsService.changeGameStatus();
-            this.eventsService.updateStatistics();
             this.getNewGame();
           } else {
             this.logsService.updateLogs('Still no result continue spinning');
