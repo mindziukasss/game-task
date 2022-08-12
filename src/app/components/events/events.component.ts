@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { EventsService, NextGameResponse } from '../../services/events.service';
-import { take, tap, debounceTime } from 'rxjs/operators';
-import { Observable } from 'rxjs';
+import { take, tap, debounceTime, catchError } from 'rxjs/operators';
+import { EMPTY, Observable } from 'rxjs';
 import { LogsService } from '../../services/logs.service';
 
 @Component({
@@ -79,6 +79,7 @@ export class EventsComponent implements OnInit {
             }, 300);
           }
         }),
+        catchError(_err => EMPTY)
       )
       .subscribe();
   }

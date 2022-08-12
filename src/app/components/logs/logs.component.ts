@@ -18,8 +18,7 @@ export class LogsComponent implements OnInit {
 
   ngOnInit(): void
   {
-    this.logs = this.logsService.logs
-      .pipe();
+    this.logs = this.logsService.logs.pipe();
   }
 
 }

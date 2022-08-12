@@ -1,9 +1,9 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Observable } from 'rxjs';
+import { EMPTY, Observable } from 'rxjs';
 import { ConfigurationService } from '../../services/configuration.service';
 import { EventsService, NextGameResponse } from '../../services/events.service';
 import { LogsService } from '../../services/logs.service';
-import { tap } from 'rxjs/operators';
+import { catchError, tap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-gameboard',
@@ -45,11 +45,13 @@ export class GameboardComponent implements OnInit, OnDestroy{
             this.outcome = null;
           }, 5000);
         }),
+        catchError(_err => EMPTY)
       )
       .subscribe();
   }
 
-  ngOnDestroy(): void {
+  ngOnDestroy(): void
+  {
     this.gameEvents.unsubscribe();
   }
 }

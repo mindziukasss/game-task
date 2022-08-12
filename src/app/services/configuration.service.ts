@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, BehaviorSubject } from 'rxjs';
-import { take, tap } from 'rxjs/operators';
+import { Observable, BehaviorSubject, EMPTY } from 'rxjs';
+import { catchError, take, tap } from 'rxjs/operators';
 import { LogsService } from './logs.service';
 import { links } from '../../app/links';
 
@@ -50,6 +50,7 @@ export class ConfigurationService {
           };
           this.updateConfig(newGameData);
         }),
+        catchError(_err => EMPTY)
       )
       .subscribe();
   }
