@@ -1,8 +1,17 @@
-<h3>Game board</h3>
-<div class="col-md-4" *ngIf="gameBoard | async as board">
+<h3 class="text-center">Game board</h3>
+<div class="row">
+  <div class="col-md-10" *ngIf="gameBoard | async as board">
     <div class="btn-group" role="group" *ngFor="let slot of board.slots; let i = index;">
-        <button *ngIf="slot.color === 'green'" type="button" class="btn btn-success">{{ slot.positionToId }}</button>
-        <button *ngIf="slot.color === 'red'" type="button" class="btn btn-danger">{{ slot.positionToId }}</button>
-        <button *ngIf="slot.color === 'black'" type="button" class="btn btn-dark">{{ slot.positionToId }}</button>
+      <button *ngIf="slot.color === 'green'" type="button" class="btn btn-success" [ngClass]="{ puls: outcome === slot.positionToId }">{{ slot.positionToId }}</button>
+      <button *ngIf="slot.color === 'red'" type="button" class="btn btn-danger" [ngClass]="{ puls: outcome === slot.positionToId }">{{ slot.positionToId }}</button>
+      <button *ngIf="slot.color === 'black'" type="button" class="btn btn-dark" [ngClass]="{ puls: outcome === slot.positionToId }">{{ slot.positionToId }}</button>
+    </div>
+  </div>
+  <div class="col-md-2">
+    <div class="text-center">
+      <div *ngIf="loading | async" class="spinner-border" role="status">
+        <span class="visually-hidden">Loading...</span>
       </div>
+    </div>
+  </div>
 </div>

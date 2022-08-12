@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { take, tap } from 'rxjs/operators';
+import { LogsService } from './logs.service';
 
 const CONFIGURATION_URL = 'https://dev-games-backend.advbet.com/v1/ab-roulette/1/configuration'
 
@@ -35,9 +36,11 @@ export class ConfigurationService {
 
   constructor(
     private http: HttpClient,
+    private logsService: LogsService
   ) {}
 
-  getConfiguration(): void {
+  getConfiguration(): void
+  {
     this.getConfig()
       .pipe(
         take(1),
@@ -52,17 +55,20 @@ export class ConfigurationService {
       .subscribe();
   }
 
-  getConfig(): Observable<Config> {
+  getConfig(): Observable<Config>
+  {
+    this.logsService.updateLogs('GET .../configuration');
     return this.http.get<Config>(CONFIGURATION_URL);
   }
 
-  updateConfig(data: GameData): void {
+  updateConfig(data: GameData): void
+  {
     this.confSubject.next(data);
   }
 
-  private getParts(data: Config): Parts[] {
+  private getParts(data: Config): Parts[]
+  {
     this.getColorsAndNumbers(data);
-
     const result: Parts[] = [];
     data.positionToId.forEach((value: any, index: any) => {
       result[index] = ({positionToId: value, color: data.colors[value], result:index});
@@ -75,6 +81,6 @@ export class ConfigurationService {
   {
     return Object.keys(data.colors).map((value) => {
       return {color: data.colors[value], positionToId: data.positionToId[value], result: data.results[value]}
-    })
+    });
   }
 }

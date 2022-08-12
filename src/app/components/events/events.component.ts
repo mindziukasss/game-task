@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { EventsService, NextGameResponse } from '../../services/events.service';
 import { take, tap, debounceTime } from 'rxjs/operators';
 import { Observable } from 'rxjs';
+import { LogsService } from '../../services/logs.service';
 
 @Component({
   selector: 'app-events',
@@ -18,7 +19,8 @@ export class EventsComponent implements OnInit {
   events: Observable<NextGameResponse[]>;
 
   constructor(
-    private eventsService: EventsService
+    private eventsService: EventsService,
+    private logsService: LogsService,
   ) { }
 
   ngOnInit(): void
@@ -35,6 +37,7 @@ export class EventsComponent implements OnInit {
         tap((nextGame: NextGameResponse) => {
           this.eventsService.addNewGameEvent(nextGame);
           this.countdown = nextGame.fakeStartDelta;
+          this.logsService.updateLogs(`sleeping for fakeStartDelta ${nextGame.fakeStartDelta} sec`);
           this.setTimer(this.countdown, nextGame.id);
         }),
       )
@@ -52,21 +55,26 @@ export class EventsComponent implements OnInit {
     } else {
       this.isTimerShow = false;
       this.getGameResultById(id);
+      this.eventsService.gameStatus();
     }
   }
 
   getGameResultById(id: number): void
   {
+    this.logsService.updateLogs('Spinning the wheel');
     this.eventsService.getGameById(id)
       .pipe(
         debounceTime(300),
         take(1),
         tap((game: NextGameResponse) => {
           if (game.outcome) {
+            this.logsService.updateLogs(`Result is ${game.outcome}`);
             this.eventsService.updateEvent(game);
+            this.eventsService.changeGameStatus();
             this.eventsService.updateStatistics();
             this.getNewGame();
           } else {
+            this.logsService.updateLogs('Still no result continue spinning');
             setTimeout(() => {
               this.getGameResultById(id);
             }, 300);

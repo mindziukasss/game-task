@@ -10,6 +10,7 @@ import { ConfigurationService } from './services/configuration.service';
 import { StatisticsComponent } from './components/statistics/statistics/statistics.component';
 import { EventsComponent } from './components/events/events.component';
 import { EventsService } from "./services/events.service";
+import { LogsComponent } from './components/logs/logs/logs.component';
 
 @NgModule({
   declarations: [
@@ -17,6 +18,7 @@ import { EventsService } from "./services/events.service";
     GameboardComponent,
     StatisticsComponent,
     EventsComponent,
+    LogsComponent,
   ],
   imports: [
     BrowserModule,

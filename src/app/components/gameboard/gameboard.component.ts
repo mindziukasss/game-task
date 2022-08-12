@@ -1,6 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ConfigurationService, GameData } from '../../services/configuration.service';
+import { LogsService } from '../../services/logs.service';
+import { EventsService, NextGameResponse } from '../../services/events.service';
+import { tap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-gameboard',
@@ -8,18 +11,50 @@ import { ConfigurationService, GameData } from '../../services/configuration.ser
   styleUrls: ['./gameboard.component.scss']
 })
 
-export class GameboardComponent implements OnInit {
+export class GameboardComponent implements OnInit, OnDestroy{
 
   // @ts-ignore
   gameBoard: Observable<GameData>;
+  // @ts-ignore
+  loading: Observable<boolean>;
+  // @ts-ignore
+  outcome: number;
+  // @ts-ignore
+  private gameEvents: Subscription;
 
   constructor(
     private configurationService: ConfigurationService,
+    private logsService: LogsService,
+    private eventsService: EventsService
   ) {}
 
-  ngOnInit(): void {
+  ngOnInit(): void
+  {
+    this.logsService.updateLogs('Loading game board');
     this.configurationService.getConfiguration();
     this.gameBoard = this.configurationService.config.pipe();
+    this.loading = this.eventsService.loading.pipe();
+
+    this.gameEvents = this.eventsService.events
+      .pipe(
+        tap((game: NextGameResponse[]) => {
+          this.lastNumber(game);
+        }),
+      )
+      .subscribe();
   }
 
+  private lastNumber(game: NextGameResponse[]): void {
+    if (game.length > 1) {
+      this.outcome = Number(game[game.length - 2].outcome);
+      setTimeout(() => {
+        // @ts-ignore
+        this.outcome = null;
+      }, 5000);
+    }
+  }
+
+  ngOnDestroy(): void {
+    this.gameEvents.unsubscribe();
+  }
 }

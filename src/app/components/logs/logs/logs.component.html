@@ -1,0 +1,4 @@
+<h3>Logs</h3>
+  <div *ngIf="logs | async as logs">
+    <p class="fs-6" *ngFor="let log of logs">{{ log }}</p>
+  </div>

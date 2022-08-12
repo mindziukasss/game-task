@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
-import { Observable, BehaviorSubject, EMPTY } from 'rxjs';
+import { Observable, BehaviorSubject, Subject } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { take, tap, catchError } from 'rxjs/operators';
 import { Statistics, StatisticsService } from './statistics.service';
+import { LogsService } from './logs.service';
 
 const NEXT_GAME_URL = 'https://dev-games-backend.advbet.com/v1/ab-roulette/1/nextGame'
 const GET_GAME_URL = 'https://dev-games-backend.advbet.com/v1/ab-roulette/1/game'
@@ -30,19 +31,26 @@ export class EventsService {
   private gameStatsSubject: BehaviorSubject<Statistics[]> = new BehaviorSubject<Statistics[]>([]);
   gameStatistics: Observable<Statistics[]> = this.gameStatsSubject.asObservable();
 
+  private isLoadingSubject: Subject<boolean> = new Subject();
+  loading: Observable<boolean> = this.isLoadingSubject.asObservable();
+
   constructor(
     private http: HttpClient,
-    private statisticsService: StatisticsService
+    private statisticsService: StatisticsService,
+    private logsService: LogsService
   )
   {}
 
   getEvents(): Observable<NextGameResponse>
   {
+    this.logsService.updateLogs('Checking for new game');
+    this.logsService.updateLogs(`GET .../stats?limit=200`);
     return this.http.get<NextGameResponse>(NEXT_GAME_URL);
   }
 
   addNewGameEvent(newEvent: NextGameResponse): void
   {
+    this.logsService.updateLogs('Get .../nextGame');
     const currentEvents: NextGameResponse[] = this.gameEventsSubject.getValue();
     currentEvents.push(newEvent);
     this.gameEventsSubject.next(currentEvents);
@@ -50,6 +58,7 @@ export class EventsService {
 
   getGameById(id: number): Observable<NextGameResponse>
   {
+    this.logsService.updateLogs('Get .../game/' + id);
     return this.http.get<NextGameResponse>(`${GET_GAME_URL}/${id}`);
   }
 
@@ -69,8 +78,17 @@ export class EventsService {
       .pipe(
         take(1),
         tap((stats: Statistics[]) => this.gameStatsSubject.next(stats)),
-        catchError(_err => EMPTY)
       )
       .subscribe();
+  }
+
+  gameStatus(): void
+  {
+    this.isLoadingSubject.next(true);
+  }
+
+  changeGameStatus(): void
+  {
+    this.isLoadingSubject.next(false);
   }
 }

@@ -1,0 +1,13 @@
+.puls {
+  animation: puls 1s linear infinite;
+  padding: 15px;
+}
+
+@keyframes puls {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
