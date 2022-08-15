@@ -9,8 +9,7 @@ import { Observable } from 'rxjs';
 })
 export class LogsComponent implements OnInit {
 
-  // @ts-ignore
-  logs: Observable<string[]>;
+  logs!: Observable<string[]>;
 
   constructor(
     private logsService: LogsService

@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { EMPTY, Observable } from 'rxjs';
-import { ConfigurationService } from '../../services/configuration.service';
+import { EMPTY, Observable, Subscription } from 'rxjs';
+import { ConfigurationService, GameData } from '../../services/configuration.service';
 import { EventsService, NextGameResponse } from '../../services/events.service';
 import { LogsService } from '../../services/logs.service';
 import { catchError, tap } from 'rxjs/operators';
@@ -13,14 +13,10 @@ import { catchError, tap } from 'rxjs/operators';
 
 export class GameboardComponent implements OnInit, OnDestroy{
 
-  // @ts-ignore
-  gameBoard: Observable<GameData>;
-  // @ts-ignore
-  loading: Observable<boolean>;
-  // @ts-ignore
-  outcome: number;
-  // @ts-ignore
-  private gameEvents: Subscription;
+  gameBoard!: Observable<GameData>;
+  loading!: Observable<boolean>;
+  outcome!: number;
+  private gameEvents!: Subscription;
 
   constructor(
     private configurationService: ConfigurationService,
@@ -38,7 +34,7 @@ export class GameboardComponent implements OnInit, OnDestroy{
     this.gameEvents = this.eventsService.events
       .pipe(
         tap((game: NextGameResponse[]) => {
-        // @ts-ignore
+          // @ts-ignore
           this.outcome = this.eventsService.lastNumber(game);
           setTimeout(() => {
             // @ts-ignore

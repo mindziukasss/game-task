@@ -3,8 +3,8 @@ import { Observable, BehaviorSubject, Subject } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { Statistics, StatisticsService } from './statistics.service';
 import { LogsService } from './logs.service';
-import { links } from '../links';
-import { consts } from "../constants";
+import { consts } from '../constants';
+import { FormService } from './form.service';
 
 export interface NextGameResponse {
   uuid: string;
@@ -23,8 +23,7 @@ export interface NextGameResponse {
 })
 export class EventsService {
 
-  // @ts-ignore
-  outcome: number;
+  outcome!: number;
 
   private gameEventsSubject: BehaviorSubject<NextGameResponse[]> = new BehaviorSubject<NextGameResponse[]>([]);
   events: Observable<NextGameResponse[]> = this.gameEventsSubject.asObservable();
@@ -38,7 +37,8 @@ export class EventsService {
   constructor(
     private http: HttpClient,
     private statisticsService: StatisticsService,
-    private logsService: LogsService
+    private logsService: LogsService,
+    private formService: FormService,
   )
   {}
 
@@ -46,7 +46,7 @@ export class EventsService {
   {
     this.logsService.updateLogs('Checking for new game');
     this.logsService.updateLogs(`GET .../stats?limit=`+ consts.LIMIT);
-    return this.http.get<NextGameResponse>(links.NEXT_GAME_URL);
+    return this.http.get<NextGameResponse>(this.formService.getBaseUrl() + '/' + consts.NEXT_GAME);
   }
 
   addNewGameEvent(newEvent: NextGameResponse): void
@@ -60,7 +60,7 @@ export class EventsService {
   getGameById(id: number): Observable<NextGameResponse>
   {
     this.logsService.updateLogs('Get .../game/' + id);
-    return this.http.get<NextGameResponse>(`${links.GET_GAME_URL}/${id}`);
+    return this.http.get<NextGameResponse>(`${this.formService.getBaseUrl() + '/' + consts.GAME}/${id}`);
   }
 
   updateEvent(newEvent: NextGameResponse): void
@@ -84,12 +84,12 @@ export class EventsService {
     this.statisticsService.updateStats();
   }
 
-  lastNumber(game: NextGameResponse[]): void
+  // @ts-ignore
+  lastNumber(game: NextGameResponse[]): number
   {
     if (game.length > 1) {
       const number = Number(game[game.length - 2].outcome);
       this.outcome = number;
-      // @ts-ignore
       return number;
     }
   }

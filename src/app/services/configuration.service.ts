@@ -3,7 +3,8 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, BehaviorSubject, EMPTY } from 'rxjs';
 import { catchError, take, tap } from 'rxjs/operators';
 import { LogsService } from './logs.service';
-import { links } from '../../app/links';
+import { FormService } from './form.service';
+import { consts } from '../constants';
 
 export interface Parts {
   color: string;
@@ -35,7 +36,8 @@ export class ConfigurationService {
 
   constructor(
     private http: HttpClient,
-    private logsService: LogsService
+    private logsService: LogsService,
+    private formService: FormService,
   ) {}
 
   getConfiguration(): void
@@ -58,7 +60,7 @@ export class ConfigurationService {
   getConfig(): Observable<Config>
   {
     this.logsService.updateLogs('GET .../configuration');
-    return this.http.get<Config>(links.CONFIGURATION_URL);
+    return this.http.get<Config>(this.formService.getBaseUrl() + '/' + consts.CONFIGURATION);
   }
 
   updateConfig(data: GameData): void

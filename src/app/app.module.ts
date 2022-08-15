@@ -11,6 +11,8 @@ import { StatisticsComponent } from './components/statistics/statistics.componen
 import { EventsComponent } from './components/events/events.component';
 import { EventsService } from "./services/events.service";
 import { LogsComponent } from './components/logs/logs.component';
+import { FormComponent } from './components/form/form.component';
+import { ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -19,16 +21,19 @@ import { LogsComponent } from './components/logs/logs.component';
     StatisticsComponent,
     EventsComponent,
     LogsComponent,
+    FormComponent,
   ],
-  imports: [
-    BrowserModule,
-    AppRoutingModule,
-    NgbModule,
-    HttpClientModule,
-  ],
+	imports: [
+		BrowserModule,
+		AppRoutingModule,
+		NgbModule,
+		HttpClientModule,
+		ReactiveFormsModule,
+	],
   providers: [
     ConfigurationService,
-    EventsService
+    EventsService,
+    FormComponent,
   ],
   bootstrap: [AppComponent]
 })

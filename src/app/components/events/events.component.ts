@@ -11,12 +11,9 @@ import { LogsService } from '../../services/logs.service';
 })
 export class EventsComponent implements OnInit {
 
-  // @ts-ignore
-  isTimerShow: boolean;
-  // @ts-ignore
-  countdown: number;
-  // @ts-ignore
-  events: Observable<NextGameResponse[]>;
+  isTimerShow!: boolean;
+  countdown!: number;
+  events!: Observable<NextGameResponse[]>;
 
   constructor(
     private eventsService: EventsService,

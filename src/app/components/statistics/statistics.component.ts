@@ -11,10 +11,8 @@ import {consts} from "../../constants";
 })
 export class StatisticsComponent implements OnInit {
 
-  // @ts-ignore
-  statistics: Observable<Statistics[]>;
-  // @ts-ignore
-  config: GameData;
+  statistics!: Observable<Statistics[]>;
+  config!: GameData;
 
   limit = consts.LIMIT
 
@@ -35,11 +33,13 @@ export class StatisticsComponent implements OnInit {
   }
 
   // @ts-ignore
-  getColor(value: number): string
+  getColor(value: number)
   {
     if (this.config) {
-      // @ts-ignore
-      return this.config.slots.find((parts: Parts) => parts.positionToId === value).color;
+       // @ts-ignore
+      let color = this.config.slots.find((parts: Parts) => parts.positionToId === value).color;
+
+      return color;
     }
   }
 }
